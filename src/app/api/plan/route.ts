@@ -33,9 +33,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: '结束日期不能早于开始日期' }, { status: 400 })
     }
 
-    // 人数默认 1
-    const peopleCount = body.peopleCount ?? 1
-
     // 预算默认 1000
     const budget = body.budget ?? 1000
 
@@ -56,7 +53,6 @@ export async function POST(req: NextRequest) {
       arrivalTime,
       departureTime,
       budget: Math.max(100, budget),
-      peopleCount: Math.max(1, peopleCount),
       pace,
       interests: body.interests || [],
       accommodationType: body.accommodationType || 'hotel',

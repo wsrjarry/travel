@@ -467,7 +467,28 @@ async function buildDayPlans(
       const hdist = hotelPoi?.district || ''
       const hotel = makeHotel(formData.destinationCity, hdist, hlat, hlng, formData.accommodationType ?? 'hotel', i)
 
-      const startPoi = i === 0 ? hotel : null
+      // 到达站点作为首日起点（如果用户选择了具体站点）
+      let startPoi: POI | null = null
+      if (i === 0 && formData.destinationStation && formData.destinationStation !== formData.destinationCity) {
+        const cityInfo3 = getCityByName(formData.destinationCity)
+        startPoi = {
+          id: 'station-arrival',
+          name: formData.destinationStation,
+          category: 'hotel' as const,
+          rating: 0,
+          price: 0,
+          duration: 0,
+          address: formData.destinationCity,
+          lat: cityInfo3?.lat || 39.9,
+          lng: cityInfo3?.lng || 116.4,
+          openTime: '全天',
+          closeDay: '',
+          tags: ['交通枢纽'],
+          description: `到达站点：${formData.destinationStation}`,
+          city: formData.destinationCity,
+          district: '',
+        }
+      }
 
       const result = await aiRouteOptimize(
         finalRawPois, startPoi,
@@ -521,7 +542,6 @@ async function buildDayPlans(
 }
 
 function buildBudget(formData: TravelFormData, days: DayPlan[]): BudgetBreakdown {
-  const peopleCount = formData.peopleCount ?? 1
   const totalBudget = formData.budget ?? 2000
   const accommodationBudget = days.reduce((s, d) => s + (d.hotel?.price || 0), 0)
   const ticketsBudget = days.reduce((s, d) =>
@@ -531,12 +551,12 @@ function buildBudget(formData: TravelFormData, days: DayPlan[]): BudgetBreakdown
   const actualTransitCost = days.reduce((s, d) =>
     s + d.activities.reduce((sum, a) => sum + (a.transitFromPrev?.price || 0), 0), 0)
   const transportBudget = actualTransitCost > 0
-    ? Math.round(actualTransitCost * peopleCount)
+    ? Math.round(actualTransitCost)
     : Math.round(totalBudget * 0.15)
 
   const foodBudget = days.reduce((s, d) =>
     s + d.activities.filter(a => a.isMealBreak).reduce((sum, act) => sum + act.cost, 0), 0)
-    + Math.round(days.length * peopleCount * 30)
+    + Math.round(days.length * 30)
   const shoppingBudget = Math.max(0, totalBudget - accommodationBudget - ticketsBudget - transportBudget - foodBudget)
 
   return {

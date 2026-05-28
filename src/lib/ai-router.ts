@@ -88,7 +88,10 @@ export async function aiRouteOptimize(
 3. **类型搭配**：避免连续参观同类型景点，适当穿插不同体验
 4. **节奏控制**：根据 pace 参数调整景点密度和休息时间
 5. **用餐安排**：在午餐和晚餐窗口安排合适的用餐时间
-6. **起点终点**：从起点出发，最后回到酒店或合理结束点
+6. **起点处理**：
+   - 如果提供了具体起点（如火车站/机场），从该起点开始
+   - 如果起点为空，请自行选择最合理的起点（通常是距离其他景点较近、交通便利或符合当天主题的第一个景点）
+7. **终点处理**：路线应在当天时间范围内自然结束，无需强制回到酒店
 
 请返回 JSON 格式：{ "orderedIds": ["id1", "id2", ...], "reasoning": "你的推理说明", "warnings": ["警告1", "警告2"] }`
 
@@ -257,7 +260,7 @@ function buildUserPrompt(
 - 开始: ${formatMinutes(constraints.dayStartTime)}  最晚结束: ${formatMinutes(constraints.maxEndTime)}
 - 午餐: ${formatMinutes(constraints.lunchWindow.start)}-${formatMinutes(constraints.lunchWindow.end)}  晚餐: ${formatMinutes(constraints.dinnerWindow.start)}-${formatMinutes(constraints.dinnerWindow.end)}
 - 节奏: ${paceMap[constraints.pace]}
-- 起点: ${startFrom ? startFrom.name : '酒店'}
+- 起点: ${startFrom ? startFrom.name : '无（请自行选择最佳起点）'}
 
 ## POI (${pois.length}个)
 `

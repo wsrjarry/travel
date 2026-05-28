@@ -16,7 +16,23 @@
    不影响使用。如果遇到空白页，请按提示运行：
    npx next dev --webpack
 
-三、生产构建 + 启动
+三、配置 API Key（可选，推荐配置）
+
+   项目依赖高德地图 API 获取实时景点/酒店数据。
+   在项目根目录创建 `.env.local` 文件，填入以下内容：
+
+   AMAP_API_KEY=你的高德地图Web服务Key
+
+   获取方式：
+   1. 访问 https://console.amap.com/dev/index 注册登录
+   2. 进入「应用管理」→「创建新应用」
+   3. 添加 Key，服务平台选择「Web服务」
+   4. 复制 Key 填入上面 AMAP_API_KEY
+
+   注意：不配置也不影响 11 个热门城市（北京、上海、广州、深圳等）使用，
+   非热门城市需要 API Key 才能获取实时 POI 数据。
+
+四、生产构建 + 启动
    cd D:\desktop\travel-planner-agent
    npm run build
    npm start
