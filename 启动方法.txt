@@ -1,0 +1,23 @@
+智能旅游攻略规划 Agent — 本地启动方法
+========================================
+
+一、安装依赖（首次运行需要）
+   cd D:\desktop\travel-planner-agent
+   npm install
+
+二、启动开发服务器（推荐）
+   cd /d D:\desktop\travel-planner-agent && npm run dev
+   npm run dev
+
+   启动后在浏览器打开： http://localhost:3000
+
+   注意：由于系统缺少 SWC 原生二进制，首次启动时可能会看到
+   "@next/swc-win32-x64-msvc" 相关警告，这是已知的正常情况，
+   不影响使用。如果遇到空白页，请按提示运行：
+   npx next dev --webpack
+
+三、生产构建 + 启动
+   cd D:\desktop\travel-planner-agent
+   npm run build
+   npm start
+
